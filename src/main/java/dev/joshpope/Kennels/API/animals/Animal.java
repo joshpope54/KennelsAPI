@@ -29,7 +29,6 @@ public class Animal {
     @Column(name = "food_information")
     private String food;
 
-
     @ManyToMany(mappedBy = "animals")
     @JsonIgnore
     private Set<Booking> booking;

@@ -7,6 +7,10 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+    long countBookingsByRoomIdNotLikeAndStartDateLessThanEqualAndEndDateGreaterThanEqual(int roomId, String startDate, String endDate);
+    long countBookingsByRoomIdNotLikeAndStartDateLike(int roomId, String startDate);
+    long countBookingsByRoomIdNotLikeAndEndDateLike(int roomId, String endDate);
+
 
     List<Booking> findBookingByStartDateLike(String date);
     List<Booking> findBookingByEndDateLike(String date);

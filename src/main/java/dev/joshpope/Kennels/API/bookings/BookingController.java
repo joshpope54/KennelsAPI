@@ -1,5 +1,10 @@
 package dev.joshpope.Kennels.API.bookings;
+import com.google.gson.Gson;
+import com.google.gson.InstanceCreator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
@@ -14,6 +19,9 @@ import java.util.List;
 public class BookingController {
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private RoomsRepository roomsRepository;
+
     //@Autowired
     //private BookingPostRepository bookingPostRepository;
     @GetMapping("/bookings")
@@ -22,8 +30,36 @@ public class BookingController {
     }
 
     @PostMapping("/bookings")
-    public Booking newCustomer(@RequestBody Booking newBooking) {
-        return bookingRepository.save(newBooking);
+    public ResponseEntity<Object> newCustomer(@RequestBody Booking newBooking) {
+        bookingRepository.save(newBooking);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/bookings/count/insouts")
+    public ResponseEntity<String> getTotalIns() throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String todaysDate = dateFormat.format(date);
+        long todaysInsCount = bookingRepository.countBookingsByRoomIdNotLikeAndStartDateLike(0, todaysDate);
+        long todaysOutsCount = bookingRepository.countBookingsByRoomIdNotLikeAndEndDateLike(0, todaysDate);
+        InsOutsCount counter = new InsOutsCount(todaysInsCount, todaysOutsCount);
+        Gson gson = new Gson();
+        String json = gson.toJson(counter);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/bookings/count/total")
+    public ResponseEntity<String> getTotalCount() throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String todaysDate = dateFormat.format(date);
+        long total = bookingRepository.countBookingsByRoomIdNotLikeAndStartDateLessThanEqualAndEndDateGreaterThanEqual(0,todaysDate,todaysDate);
+        TotalCount totalCount = new TotalCount(total, roomsRepository.count()-1);
+        Gson gson = new Gson();
+        String json = gson.toJson(totalCount);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
     }
 
     @GetMapping("/bookings/id/{id}")

@@ -30,10 +30,26 @@ public class BookingController {
     }
 
     @PostMapping("/bookings")
-    public ResponseEntity<Object> newCustomer(@RequestBody Booking newBooking) {
+    public ResponseEntity<Object> newBooking(@RequestBody Booking newBooking) {
         bookingRepository.save(newBooking);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @CrossOrigin
+    @PostMapping("/bookings/{id}/{status}")
+    public ResponseEntity<Object> changeStatus(@PathVariable Long id, @PathVariable Long status) {
+        if(status==1 || status==2 || status==3){
+            bookingRepository.findById(id)
+                    .map(booking -> {
+                        booking.setArrived(""+status);
+                        return bookingRepository.save(booking);
+                    });
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
 
     @GetMapping("/bookings/count/insouts")
     public ResponseEntity<String> getTotalIns() throws ParseException {
@@ -49,12 +65,25 @@ public class BookingController {
         return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
     }
 
+    @GetMapping("/bookings/count/insouts/{date}")
+    public ResponseEntity<String> getTotalInsOutsOnDate(@PathVariable(value = "date") String date) throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date requestedDate = dateFormat.parse(date);
+        long todaysInsCount = bookingRepository.countBookingsByRoomIdNotLikeAndStartDateLike(0, dateFormat.format(requestedDate));
+        long todaysOutsCount = bookingRepository.countBookingsByRoomIdNotLikeAndEndDateLike(0, dateFormat.format(requestedDate));
+        InsOutsCount counter = new InsOutsCount(todaysInsCount, todaysOutsCount);
+        Gson gson = new Gson();
+        String json = gson.toJson(counter);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
+    }
+
     @GetMapping("/bookings/count/total")
     public ResponseEntity<String> getTotalCount() throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String todaysDate = dateFormat.format(date);
-        long total = bookingRepository.countBookingsByRoomIdNotLikeAndStartDateLessThanEqualAndEndDateGreaterThanEqual(0,todaysDate,todaysDate);
+        long total = bookingRepository.countBookingsByRoomIdNotLikeAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndArrivedLike(0,todaysDate,todaysDate,"CHECKED IN");
         TotalCount totalCount = new TotalCount(total, roomsRepository.count()-1);
         Gson gson = new Gson();
         String json = gson.toJson(totalCount);
@@ -73,8 +102,8 @@ public class BookingController {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String todaysDate = dateFormat.format(date);
-        List<Booking> insToday = bookingRepository.findBookingByStartDateLike(todaysDate);
-        List<Booking> outsToday = bookingRepository.findBookingByEndDateLike(todaysDate);
+        List<Booking> insToday = bookingRepository.findBookingByStartDateLikeAndStatusNotLike(todaysDate,"CANCELLED");
+        List<Booking> outsToday = bookingRepository.findBookingByEndDateLikeAndStatusNotLike(todaysDate,"CANCELLED");
         ArrayList<Booking> allToday = new ArrayList<>();
         allToday.addAll(insToday);
         allToday.addAll(outsToday);
@@ -85,8 +114,8 @@ public class BookingController {
     public List<Booking> getBookingsByDate(@PathVariable(value = "date") String date) throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date requestedDate = dateFormat.parse(date);
-        List<Booking> insToday = bookingRepository.findBookingByStartDateLike(dateFormat.format(requestedDate));
-        List<Booking> outsToday = bookingRepository.findBookingByEndDateLike(dateFormat.format(requestedDate));
+        List<Booking> insToday = bookingRepository.findBookingByStartDateLikeAndStatusNotLike(dateFormat.format(requestedDate),"CANCELLED");
+        List<Booking> outsToday = bookingRepository.findBookingByEndDateLikeAndStatusNotLike(dateFormat.format(requestedDate),"CANCELLED");
         ArrayList<Booking> allToday = new ArrayList<>();
         allToday.addAll(insToday);
         allToday.addAll(outsToday);
@@ -106,6 +135,6 @@ public class BookingController {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String todaysDate = dateFormat.format(date);
-        return bookingRepository.findBookingByStartDateLessThanEqualAndEndDateGreaterThanEqual(todaysDate, todaysDate);
+        return bookingRepository.findBookingByStartDateLessThanEqualAndEndDateGreaterThanEqualAndArrivedLike(todaysDate, todaysDate,"CHECKED IN");
     }
 }

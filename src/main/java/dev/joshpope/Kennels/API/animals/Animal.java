@@ -1,6 +1,7 @@
 package dev.joshpope.Kennels.API.animals;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.joshpope.Kennels.API.bookings.Booking;
+import dev.joshpope.Kennels.API.breeds.Breed;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -12,14 +13,15 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 public class Animal {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
     @Column(name = "customer_id")
     private int customerId;
     @Column(name = "animal_name")
     private String name;
-    @Column(name = "breed_id")
-    private int breedId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "breed_id", referencedColumnName = "id",nullable = false)
+    private Breed breed;
     @Column(name = "gender")
     private String gender;
     @Column(name = "notes")
@@ -65,12 +67,12 @@ public class Animal {
         this.name = name;
     }
 
-    public int getBreedId() {
-        return breedId;
+    public Breed getBreedId() {
+        return breed;
     }
 
-    public void setBreedId(int breedId) {
-        this.breedId = breedId;
+    public void setBreedId(Breed breedId) {
+        this.breed = breedId;
     }
 
     public String getGender() {

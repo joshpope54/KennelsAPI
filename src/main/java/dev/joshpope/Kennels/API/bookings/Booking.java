@@ -14,12 +14,12 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class Booking {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
     @Column(name = "customer_id")
     private int customerId;
-    @Column(name = "room_id")
-    private int roomId;
+    @ManyToOne
+    private Rooms room;
     @Column(name = "start_date")
     private String startDate;
     @Column(name = "end_date")
@@ -33,7 +33,8 @@ public class Booking {
     private float paymentTotal;
     @Column(name = "type")
     private String type;
-
+    @Column(name = "arrived_status")
+    private String arrived;
     @ManyToMany
     @JoinTable(
             name = "bookings_animals",
@@ -65,12 +66,12 @@ public class Booking {
         this.customerId = customerId;
     }
 
-    public int getRoomId() {
-        return roomId;
+    public Rooms getRoom() {
+        return room;
     }
 
-    public void setRoomId(int roomId) {
-        this.roomId = roomId;
+    public void setRoom(Rooms room) {
+        this.room = room;
     }
 
     public String getStartDate() {
@@ -119,5 +120,13 @@ public class Booking {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getArrived() {
+        return arrived;
+    }
+
+    public void setArrived(String arrived) {
+        this.arrived = arrived;
     }
 }

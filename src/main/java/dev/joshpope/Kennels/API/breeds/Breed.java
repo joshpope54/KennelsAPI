@@ -11,11 +11,22 @@ import javax.persistence.*;
 public class Breed {
     @Id
     @JsonIgnore
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "breed_name")
     private String breedName;
+
+    @ManyToOne
+    private Species species;
+
+    public Species getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(Species species) {
+        this.species = species;
+    }
 
     public long getId() {
         return id;

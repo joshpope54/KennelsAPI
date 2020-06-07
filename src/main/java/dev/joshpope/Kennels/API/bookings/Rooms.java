@@ -17,6 +17,9 @@ public class Rooms {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "size")
+    private String size;
+
     public long getId() {
         return id;
     }
@@ -31,6 +34,23 @@ public class Rooms {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    @Override
+    public String toString() {
+        return "Rooms{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", size='" + size + '\'' +
+                '}';
     }
 }
 

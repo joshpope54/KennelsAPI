@@ -21,6 +21,12 @@ public class CustomerController {
                 .orElseThrow(() -> new CustomerException(userId));
     }
 
+    @CrossOrigin
+    @GetMapping("/customers/name/{name}")
+    public List<Customer> getCustomersByName(@PathVariable(value = "name") String name) {
+        return customerRepository.findCustomerByFirstNameLikeOrLastNameLike(name,name);
+    }
+
     @PostMapping("/customers")
     public Customer newCustomer(@RequestBody Customer newCustomer) {
         return customerRepository.save(newCustomer);

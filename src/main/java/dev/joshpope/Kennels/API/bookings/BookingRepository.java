@@ -10,9 +10,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     long countBookingsByRoomIdNotLikeAndStartDateLessThanEqualAndEndDateGreaterThanEqualAndArrivedLike(long room_id, String startDate, String endDate, String arrived);
     long countBookingsByRoomIdNotLikeAndStartDateLike(long roomId, String startDate);
     long countBookingsByRoomIdNotLikeAndEndDateLike(long roomId, String endDate);
-
-
-
     List<Booking> findBookingByStartDateLikeAndStatusNotLike(String startDate, String status);
     List<Booking> findBookingByEndDateLikeAndStatusNotLike(String endDate, String status);
     List<Booking> findBookingByEndDateLessThan(String date);

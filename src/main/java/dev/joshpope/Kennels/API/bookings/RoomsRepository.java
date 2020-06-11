@@ -15,10 +15,10 @@ public interface RoomsRepository extends JpaRepository<Rooms, Long> {
             "CAST(?1 AS DATE) < CAST(bookings.end_date AS DATE)) OR " +
             "(CAST(?2 AS DATE) > CAST(bookings.start_date AS DATE) AND" +
             " CAST(?2 AS DATE) < CAST(bookings.end_date AS DATE)) OR " +
-            "((CAST(bookings.start_date AS DATE) > CAST(?1 AS DATE) AND " +
-            "CAST(bookings.start_date AS DATE) < CAST(?2 AS DATE)) AND " +
-            "(CAST(bookings.end_date AS DATE) > CAST(?1 AS DATE) AND " +
-            "CAST(bookings.end_date AS DATE) < CAST(?2 AS DATE))))" +
+            "((CAST(bookings.start_date AS DATE) >= CAST(?1 AS DATE) AND " +
+            "CAST(bookings.start_date AS DATE) <= CAST(?2 AS DATE)) AND " +
+            "(CAST(bookings.end_date AS DATE) >= CAST(?1 AS DATE) AND " +
+            "CAST(bookings.end_date AS DATE) <= CAST(?2 AS DATE))))" +
             " and id not like 0", nativeQuery = true)
     List<Rooms> findAvailableRoomsOnDates(String startDate, String endDate);
 }

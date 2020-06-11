@@ -2,16 +2,15 @@ package dev.joshpope.Kennels.API.bookings;
 
 import dev.joshpope.Kennels.API.animals.Animal;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
 @Table(name = "bookings")
-@EntityListeners(AuditingEntityListener.class)
 public class Booking {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -35,19 +34,17 @@ public class Booking {
     private String type;
     @Column(name = "arrived_status")
     private String arrived;
-    @ManyToMany
+
+    @ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(
             name = "bookings_animals",
-            joinColumns = @JoinColumn(name = "booking_id"),
-            inverseJoinColumns = @JoinColumn(name = "animals_id"))
-    private List<Animal> animals;
+            joinColumns = { @JoinColumn(name = "booking_id") },
+            inverseJoinColumns = { @JoinColumn(name = "animals_id") }
+    )
+    Set<Animal> animals = new HashSet<>();
 
-    public List<Animal> getAnimals() {
+    public Set<Animal> getAnimals() {
         return animals;
-    }
-
-    public void setAnimals(List<Animal> animals) {
-        this.animals = animals;
     }
 
     public long getId() {

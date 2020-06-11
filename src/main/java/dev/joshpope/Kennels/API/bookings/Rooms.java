@@ -10,7 +10,6 @@ import javax.persistence.*;
 @EntityListeners(AuditingEntityListener.class)
 public class Rooms {
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 

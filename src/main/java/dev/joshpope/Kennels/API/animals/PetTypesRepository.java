@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AnimalRepository extends JpaRepository<Animal, Long> {
-    List<Animal> findAllByCustomerIdEquals(int customerId);
+public interface PetTypesRepository extends JpaRepository<PetType, Long> {
 }

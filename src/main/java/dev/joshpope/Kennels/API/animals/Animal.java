@@ -2,15 +2,13 @@ package dev.joshpope.Kennels.API.animals;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.joshpope.Kennels.API.bookings.Booking;
 import dev.joshpope.Kennels.API.breeds.Breed;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "animals")
-@EntityListeners(AuditingEntityListener.class)
 public class Animal {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -22,6 +20,11 @@ public class Animal {
     @ManyToOne(optional = false)
     @JoinColumn(name = "breed_id", referencedColumnName = "id",nullable = false)
     private Breed breed;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "pet_type", referencedColumnName = "id",nullable = false)
+    private PetType petType;
+
     @Column(name = "gender")
     private String gender;
     @Column(name = "notes")
@@ -31,17 +34,9 @@ public class Animal {
     @Column(name = "food_information")
     private String food;
 
-    @ManyToMany(mappedBy = "animals")
     @JsonIgnore
-    private Set<Booking> booking;
-
-    public Set<Booking> getBooking() {
-        return booking;
-    }
-
-    public void setBooking(Set<Booking> booking) {
-        this.booking = booking;
-    }
+    @ManyToMany(mappedBy = "animals")
+    private Set<Booking> bookings = new HashSet<>();
 
     public long getId() {
         return id;
@@ -67,11 +62,15 @@ public class Animal {
         this.name = name;
     }
 
-    public Breed getBreedId() {
+    public Breed getBreed() {
         return breed;
     }
 
-    public void setBreedId(Breed breedId) {
+    public PetType getPetType() {
+        return petType;
+    }
+
+    public void setBreed(Breed breedId) {
         this.breed = breedId;
     }
 

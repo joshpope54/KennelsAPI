@@ -29,6 +29,8 @@ public class BookingController {
         return  bookingRepository.findAll();
     }
 
+
+    @CrossOrigin
     @PostMapping("/bookings")
     public ResponseEntity<Object> newBooking(@RequestBody Booking newBooking) {
         bookingRepository.save(newBooking);

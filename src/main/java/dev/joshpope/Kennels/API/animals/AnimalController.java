@@ -16,6 +16,11 @@ public class AnimalController {
         return animalRepository.findAll();
     }
 
+    @CrossOrigin
+    @GetMapping("/animals/customerid/{id}")
+    public List<Animal> getAllAnimalsWithCustomer(@PathVariable(value = "id") int userId) {
+        return animalRepository.findAllByCustomerIdEquals(userId);
+    }
 
     @GetMapping("/animals/{id}")
     public Animal getUsersById(@PathVariable(value = "id") Long userId) {

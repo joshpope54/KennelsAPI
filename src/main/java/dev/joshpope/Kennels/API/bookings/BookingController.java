@@ -32,9 +32,8 @@ public class BookingController {
 
     @CrossOrigin
     @PostMapping("/bookings")
-    public ResponseEntity<Object> newBooking(@RequestBody Booking newBooking) {
-        bookingRepository.save(newBooking);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public Booking newBooking(@RequestBody Booking newBooking) {
+        return bookingRepository.save(newBooking);
     }
 
     @CrossOrigin

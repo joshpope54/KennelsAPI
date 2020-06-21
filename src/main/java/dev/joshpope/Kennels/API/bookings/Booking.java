@@ -43,7 +43,7 @@ public class Booking {
     )
     Set<Animal> animals = new HashSet<>();
 
-    
+
     public Set<Animal> getAnimals() {
         return animals;
     }

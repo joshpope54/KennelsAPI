@@ -22,6 +22,6 @@ public class BookingRatesController {
     @CrossOrigin
     @GetMapping("/rates/{id}")
     public BookingRates getUsersById(@PathVariable(value = "id") int userId) {
-        return ratesRepository.findBookingRatesByPetTypeEquals(userId);
+        return ratesRepository.findBookingRatesByPetTypeId(userId);
     }
 }

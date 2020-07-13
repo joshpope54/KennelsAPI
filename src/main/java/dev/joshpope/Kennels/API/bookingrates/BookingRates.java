@@ -1,5 +1,6 @@
 package dev.joshpope.Kennels.API.bookingrates;
 
+import dev.joshpope.Kennels.API.animals.PetType;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -12,8 +13,9 @@ public class BookingRates {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "pet_type")
-    private int petType;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "pet_type", referencedColumnName = "id",nullable = false)
+    private PetType petType;
 
     @Column(name = "cost_per_night")
     private float cost;
@@ -26,11 +28,11 @@ public class BookingRates {
         this.id = id;
     }
 
-    public int getPetType() {
+    public PetType getPetType() {
         return petType;
     }
 
-    public void setPetType(int petType) {
+    public void setPetType(PetType petType) {
         this.petType = petType;
     }
 

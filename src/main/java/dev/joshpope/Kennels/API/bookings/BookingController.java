@@ -51,7 +51,7 @@ public class BookingController {
         }
     }
 
-
+    @CrossOrigin
     @GetMapping("/bookings/count/insouts")
     public ResponseEntity<String> getTotalIns() throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -66,6 +66,7 @@ public class BookingController {
         return new ResponseEntity<String>(json, responseHeaders, HttpStatus.CREATED);
     }
 
+    @CrossOrigin
     @GetMapping("/bookings/count/insouts/{date}")
     public ResponseEntity<String> getTotalInsOutsOnDate(@PathVariable(value = "date") String date) throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -121,6 +122,24 @@ public class BookingController {
         allToday.addAll(insToday);
         allToday.addAll(outsToday);
         return allToday;
+    }
+
+    @CrossOrigin
+    @GetMapping("/bookings/ins/date/{date}")
+    public List<Booking> getInsByDate(@PathVariable(value = "date") String date) throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date requestedDate = dateFormat.parse(date);
+        List<Booking> insToday = bookingRepository.findBookingByStartDateLikeAndStatusNotLike(dateFormat.format(requestedDate),"CANCELLED");
+        return new ArrayList<>(insToday);
+    }
+
+    @CrossOrigin
+    @GetMapping("/bookings/outs/date/{date}")
+    public List<Booking> getOutsByDate(@PathVariable(value = "date") String date) throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date requestedDate = dateFormat.parse(date);
+        List<Booking> outsToday = bookingRepository.findBookingByEndDateLikeAndStatusNotLike(dateFormat.format(requestedDate),"CANCELLED");
+        return new ArrayList<>(outsToday);
     }
 
     @GetMapping("/bookings/past")

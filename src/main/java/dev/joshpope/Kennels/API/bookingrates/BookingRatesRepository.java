@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface BookingRatesRepository extends JpaRepository<BookingRates, Long> {
-    BookingRates findBookingRatesByPetTypeEquals(int petType);
+    BookingRates findBookingRatesByPetTypeId(long petType_id);
 }

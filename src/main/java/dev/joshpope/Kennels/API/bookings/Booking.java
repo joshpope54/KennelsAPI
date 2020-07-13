@@ -1,6 +1,8 @@
 package dev.joshpope.Kennels.API.bookings;
 
 import dev.joshpope.Kennels.API.animals.Animal;
+import dev.joshpope.Kennels.API.animals.PetType;
+import dev.joshpope.Kennels.API.customer.Customer;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -15,8 +17,8 @@ public class Booking {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
-    @Column(name = "customer_id")
-    private int customerId;
+    @ManyToOne
+    private Customer customer;
     @ManyToOne
     private Rooms room;
     @Column(name = "start_date")
@@ -56,12 +58,12 @@ public class Booking {
         this.id = id;
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Rooms getRoom() {
